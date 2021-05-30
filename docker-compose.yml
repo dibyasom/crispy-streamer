@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  broker:
+    image: rabbitmq
+    container_name: message-broker
+    ports:
+      - "5672:5672"
+  
+  backend:
+    image: redis
+    container_name: celery-backend
+    ports:
+      - "6379:6379"
+  # db:
+  #   image: gcr.io/cloudsql-docker/gce-proxy:1.19.1
+  #   command: /cloud_sql_proxy -instances=emailer-301417:us-central1:emailcore-psql=tcp:0.0.0.0:5432
+  #   volumes:
+  #     - /home/divyu/repos/emailer/localDb/.config/:/config
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     GOOGLE_APPLICATION_CREDENTIALS: /config/cred.json
