@@ -27,8 +27,6 @@ RUN sudo apt-get update && \
 
 ENV GOOGLE_APPLICATION_CREDENTIALS="/build/secret/creds.json" TZ=Asia/Kolkota
 
-COPY --chown=dibyasom ./src/ assets/
-
 WORKDIR /build/workspace
 
 CMD [ "sudo", "python", "main.py" ]

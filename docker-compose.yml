@@ -31,6 +31,7 @@ services:
       GOOGLE_APPLICATION_CREDENTIALS: "/build/secret/creds.json"
     volumes:
       - shared-source-code:/build/workspace:rw
+      - ./stream-handle-src/src:/build/assets/
     links:
       - broker
       - backend

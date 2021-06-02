@@ -20,8 +20,8 @@ BUCKET_NAME = 'calcul-datastore'
 WINDOW_SIZE = 3.0
 
 # For every X input frame, 1 frame is written to uploader.
-# REFRESH_RATE represents X. 
-# For instance, Setting to 3, will mean, Upload every 3rd frame ...  
+# REFRESH_RATE represents X.
+# For instance, Setting to 3, will mean, Upload every 3rd frame ...
 REFRESH_RATE = 3
 
 EXC_FILE_NAME = "./upload/upload.mkv"
@@ -43,12 +43,11 @@ time_consumed_in_memory = 0
 
 if __name__ == '__main__':
     try:
-        print("before")
         stream = cv.VideoCapture(VIDEO_URL)
-        print("after")
         DIMENSION = (int(stream.get(3)), int(stream.get(4)), 3)
         FPS = 30
-
+        print(f"Streamsize")
+        print(stream.get(3))
         chk_pt = time.perf_counter()  # Abs time elapsed since CPU cycle.
         start_stamp = f"{datetime.datetime.now()}"
         video_chunks_namespace = f"upload-{start_stamp}/"
