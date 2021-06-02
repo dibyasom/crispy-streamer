@@ -96,7 +96,7 @@ To test the system, there a few pre-requisites to be satisfied,
 - Docker and docker-compose installed in the system. (podman and podman-compose will work fine too, tested already.)
 - Google service account credentials, with sufficient permissions to write, and create buckets (If not already created). [In production, I would make sure credentials are passed as environment variable, rather than manual upload]
 
-> Rename the service account credential as `creds.json` and place it in, `gcs-celery-worker-src`/`src`/
+> Rename the service account credential as `creds.json` and place it in, `gcs-celery-worker-src`/
 
 > Rename the video file to be uploaded as `cctv.mp4` and do place it in, `stream-handle-src`/`src`/
 
