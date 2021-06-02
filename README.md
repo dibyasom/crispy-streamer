@@ -4,7 +4,7 @@
 
 <hr>
 
-#### Source code (and explanations) for implementing the objective of uploading frames into `GCS bucket`, compute its resolution, and log the details. <br><br>I have used `docker` with custom `Dockerfile` for provisioning a fine tuned runtime for running the concurrent frame upload worker nodes, worker nodes are managed by `celery`. <br><br> Tested with sample CCTV footages (From Youtube), consistently achieved `60+ FPS :rocket:` with still a huge room for optimisation here, I'm sure it can achieve 120 FPS, like compressing the video, right now I'm uploading raw binaries (Due to time cnstraint haven't worked on compression yet).<br><br>
+#### Source code (and explanations) for implementing the objective of uploading frames into `GCS bucket`, compute its resolution, and log the details. <br><br>I have used `docker` with custom `Dockerfile` for provisioning a fine tuned runtime for running the concurrent frame upload worker nodes, worker nodes are managed by `celery`. <br><br> Tested with sample CCTV footages (From Youtube), consistently achieved `60+ FPS` :rocket: with still a huge room for optimisation here, I'm sure it can achieve 120 FPS, like compressing the video, right now I'm uploading raw binaries (Due to time cnstraint haven't worked on compression yet).<br><br>
 
 ### < Working of frame uploader / >
 
@@ -96,7 +96,7 @@ To test the system, there a few pre-requisites to be satisfied,
 - Docker and docker-compose installed in the system. (podman and podman-compose will work fine too, tested already.)
 - Google service account credentials, with sufficient permissions to write, and create buckets (If not already created). [In production, I would make sure credentials are passed as environment variable, rather than manual upload]
 
-> Rename the service account credential as `creds.json` and place it in, `gcs-celery-worker-src`/`src`/
+> Rename the service account credential as `creds.json` and place it in, `gcs-celery-worker-src`/
 
 > Rename the video file to be uploaded as `cctv.mp4` and do place it in, `stream-handle-src`/`src`/
 
