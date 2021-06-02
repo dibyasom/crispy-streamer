@@ -14,20 +14,18 @@ RUN useradd -m -d /home/${user} ${user} && \
 
 USER ${user}
 
+
+COPY requirements.txt ./
+
 RUN sudo apt-get update && \
     sudo apt-get install apt-utils ffmpeg libsm6 libxext6 tzdata -y && \
     echo 'export PATH="/home/dibyasom/.local/bin:$PATH"' > ~/.bashrc && \
     sudo apt autoremove && \
     sudo mkdir workspace && \
-    sudo mkdir assets
+    sudo mkdir assets && \
+    sudo pip install --no-cache-dir -r requirements.txt 
 
-COPY requirements.txt ./
-
-RUN sudo pip install --no-cache-dir -r requirements.txt 
-
-ENV GOOGLE_APPLICATION_CREDENTIALS="/build/secret/creds.json"
-
-ENV TZ Asia/Kolkota
+ENV GOOGLE_APPLICATION_CREDENTIALS="/build/secret/creds.json" TZ=Asia/Kolkota
 
 COPY --chown=dibyasom ./src/ assets/
 
