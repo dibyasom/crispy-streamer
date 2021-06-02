@@ -1,4 +1,4 @@
-version: "3"
+version: "3.3"
 
 services:
   broker:
@@ -12,12 +12,29 @@ services:
     container_name: celery-backend
     ports:
       - "6379:6379"
-  # db:
-  #   image: gcr.io/cloudsql-docker/gce-proxy:1.19.1
-  #   command: /cloud_sql_proxy -instances=emailer-301417:us-central1:emailcore-psql=tcp:0.0.0.0:5432
-  #   volumes:
-  #     - /home/divyu/repos/emailer/localDb/.config/:/config
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     GOOGLE_APPLICATION_CREDENTIALS: /config/cred.json
+
+  gcs-celery-worker:
+    build: ./gcs-celery-worker-src/
+    container_name: gcs-celery-worker
+    environment: 
+      GOOGLE_APPLICATION_CREDENTIALS: "/build/secret/creds.json"
+    volumes:
+      - shared-source-code:/build/workspace:rw
+    links:
+      - broker
+      - backend
+
+  stream-handle:
+    build: ./stream-handle-src/
+    container_name: stream-handle
+    environment: 
+      GOOGLE_APPLICATION_CREDENTIALS: "/build/secret/creds.json"
+    volumes:
+      - shared-source-code:/build/workspace:rw
+    links:
+      - broker
+      - backend
+      - gcs-celery-worker
+
+volumes: 
+  shared-source-code:
