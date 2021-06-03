@@ -24,7 +24,6 @@ WINDOW_SIZE = 3.0
 # For instance, Setting to 3, will mean, Upload every 3rd frame ...
 REFRESH_RATE = 3
 
-EXC_FILE_NAME = "./upload/upload.mkv"
 
 DIMENSION = []
 

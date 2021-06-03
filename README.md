@@ -10,7 +10,21 @@
 
 <hr>
 
-#### ![Uploader workflow](images/uploader-exp.png) <br> Uploading small video chunks, rather than individual frames because ...
+#### ![Uploader workflow](images/uploader-exp.png) <br>
+
+:paperclip: `main.py`, edit this snippet in codebase, [here](https://github.com/vhaegar1526/crispy-streamer/blob/47af99e21f4b07c281a8244dfc5d2e95d224227e/gcs-celery-worker-src/src/main.py) :)
+
+```python
+# Set window size, for video chunk.
+WINDOW_SIZE = 3.0
+
+# For every X input frame, 1 frame is written to uploader.
+# REFRESH_RATE represents X.
+# For instance, Setting to 3, will mean, Upload every 3rd frame ...
+REFRESH_RATE = 3
+```
+
+#### Uploading small video chunks, rather than individual frames because ...
 
 - Uploading individual frames is very expensive for bandwidth, and too much dependent on network.
 - For instance, uploading 50-60 FPS with individual frame upload means, 50-60 asynchronous HTTP requests every second, and a bad network would imply, all 50-60 requests to be processed v slowly, and delaying the task queue consequently.
