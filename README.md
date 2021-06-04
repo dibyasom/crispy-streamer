@@ -1,12 +1,14 @@
 # :zap: crispy-streamer :tv:
 
-### < Brief / >
+### Brief
 
 <hr>
 
 #### Source code (and explanations) for implementing the objective of uploading frames into `GCS bucket`, compute its resolution, and log the details. <br><br>I have used `docker` with custom `Dockerfile` for provisioning a fine tuned runtime for running the concurrent frame upload worker nodes, worker nodes are managed by `celery`. <br><br> Tested with sample CCTV footages (From Youtube), consistently achieved `60+ FPS` :rocket: with still a huge room for optimisation here, for instance `scene-based` resolution resizing and video compression on top of that, could significantly improve the performance beyond 100+ FPS.<br><br>
 
-### < Working of frame uploader / >
+### TODO: Research + Supporting hardware config ?
+
+### Working of frame uploader
 
 <hr>
 
@@ -33,7 +35,7 @@ REFRESH_RATE = 3
 - `Best part -> Reduces operational overhead in cloud side, we won't have to run queing jobs to align the frames into the correct sequence, as these are time-stamp annotated video chunks, having the frames in sequence.`
 - I have designed the code in a way, that it signs the metadata to every video chunk before uploading, with the exact duration of video-clip it contains, `Dataflow` can read this `Metadata` and streamline the data efficeintly for cognitive processing in later stages.
 
-### < Microservice architecture for uploader, with celery task queue / >
+### Microservice architecture for uploader, with celery task queue
 
 <hr>
 
@@ -52,7 +54,7 @@ REFRESH_RATE = 3
 
 ##### I have implemented docker-named-mounts, where in the containers can write video chunks, and can be efficently shared by worker-nodes to be used, without needing to transfer the file bw containers.<br><br>
 
-### < Cloud Architecture to process the frames, once received / >
+### Cloud Architecture to process the frames, once received
 
 <hr>
 
