@@ -7,14 +7,14 @@ BUCKET_NAME = 'calcul-datastore'
 
 @app.task
 def summon_gcs(upload_file_config):
-
     gcs = GCS(
         upload_file_config=upload_file_config)
-    gcs.up_filename()
+    fn = gcs.up_filename()
 
     # Dispose once done
     del gcs
 
+    return fn
 
 class GCS:
 
@@ -55,8 +55,7 @@ class GCS:
         # The ID of your GCS object
         # destination_blob_name = "storage-object-name"
 
-        storage_client = storage.Client.from_service_account_json(
-            '/build/assets/creds.json')
+        storage_client = storage.Client()
         bucket = storage_client.bucket(self.bucket_name)
 
         # TODO: Optimise for batch uploads.
@@ -67,7 +66,7 @@ class GCS:
 
         try:
             url = blob.upload_from_filename(file_name)
-            return url
+            return file_name
         # print(blob._get_writable_metadata)
         except Exception as e:
             return e

@@ -1,7 +1,5 @@
 FROM python:3.6-slim-buster
 
-WORKDIR  /build
-
 RUN apt-get update && \
     apt-get -y install sudo
 
@@ -12,26 +10,23 @@ RUN useradd -m -d /home/${user} ${user} && \
     adduser ${user} sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+WORKDIR  /home/${user}/streamer
+
 USER ${user}
+
+COPY --chown=${user}:${user} requirements.txt .
 
 RUN sudo apt-get update && \
     sudo apt-get install apt-utils tzdata -y && \
     sudo apt autoremove && \
-    sudo mkdir assets && \
-    sudo mkdir workspace
+    sudo mkdir {assets,workspace} && \
+    export PATH="/home/${user}/.local/bin:$PATH" && \  
+    pip install --no-cache-dir -r requirements.txt 
 
-COPY requirements.txt .
+ENV GOOGLE_APPLICATION_CREDENTIALS="/home/dibyasom/streamer/assets/creds.json" TZ="Asia/Kolkota"
 
-RUN sudo pip install --no-cache-dir -r requirements.txt 
+WORKDIR /home/${user}/streamer/workspace
 
-ENV GOOGLE_APPLICATION_CREDENTIALS="/build/secret/creds.json"
+COPY --chown=${user} src/ .
 
-ENV TZ Asia/Kolkota
-
-COPY --chown=${user} src/ workspace/
-
-# COPY --chown=${user} creds.json assets/
-
-WORKDIR /build/workspace
-
-CMD [ "celery", "-A", "gcs_util", "worker", "--loglevel=INFO" ]
+CMD [ "python", "-m", "celery", "-A", "gcs_util", "worker", "--loglevel=INFO" ]

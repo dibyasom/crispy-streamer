@@ -1,5 +1,3 @@
 #!/bin/bash
 
-echo "Sleeping for 10 seconds ... "
-exec python main.py
-
+exec echo "Engaging celery 🚀" && sleep 10 && celery -A gcs_util worker --loglevel=INFO

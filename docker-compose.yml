@@ -17,11 +17,14 @@ services:
     build: ./gcs-celery-worker-src/
     container_name: gcs-celery-worker
     environment: 
-      GOOGLE_APPLICATION_CREDENTIALS: "/build/secret/creds.json"
+      GOOGLE_APPLICATION_CREDENTIALS: "/home/dibyasom/streamer/assets/creds.json"
     volumes:
-      - shared-source-code:/build/workspace:rw
-      - ./gcs-celery-worker-src/secret/:/build/assets/
+      - shared-source-code:/home/dibyasom/streamer/workspace:ro
+      - ./gcs-celery-worker-src/secret/:/home/dibyasom/streamer/assets:ro
     links:
+      - broker
+      - backend
+    depends_on:
       - broker
       - backend
 
@@ -29,11 +32,9 @@ services:
     build: ./stream-handle-src/
     container_name: stream-handle
     volumes:
-      - shared-source-code:/build/workspace:rw
-      - ./stream-handle-src/src:/build/assets/
-    links:
-      - broker
-      - backend
+      - shared-source-code:/home/dibyasom/shredder/workspace:rw
+      - ./stream-handle-src/src:/home/dibyasom/shredder/assets:rw
+    depends_on:
       - gcs-celery-worker
 
 volumes: 

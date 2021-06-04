@@ -14,10 +14,10 @@ import time
 import os
 
 # Mimicing this local video file as a stream.
-VIDEO_URL = "/build/assets/cctv.mp4"
+VIDEO_URL = "/home/dibyasom/shredder/assets/cctv.mp4"
 
-# Target bucket
-BUCKET_NAME = 'calcul-datastore'
+# # Target bucket
+# BUCKET_NAME = 'calcul-datastore'
 
 # Set window size, for video chunk
 WINDOW_SIZE = 3.0
@@ -40,7 +40,7 @@ def numpy_to_bytes(arr: np.array) -> str:
     return to_return
 
 
-counter, p_counter, a_counter = 1, 1, 1
+counter, p_counter, a_counter = 0, 0, 0
 time_consumed_in_memory = 0
 
 if __name__ == '__main__':
@@ -135,7 +135,7 @@ if __name__ == '__main__':
         print("\nOkay, bye <3")
 
     except Exception as e:
-        print(e.__traceback__)
+        print(e)
 
     finally:
         # Display Analysis before exiting.
