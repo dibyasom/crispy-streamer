@@ -30,10 +30,8 @@ ENV TZ Asia/Kolkota
 
 COPY --chown=${user} src/ workspace/
 
-COPY --chown=${user} creds.json assets/
+# COPY --chown=${user} creds.json assets/
 
 WORKDIR /build/workspace
-
-RUN sudo chmod +x entrypoint.sh 
 
 CMD [ "celery", "-A", "gcs_util", "worker", "--loglevel=INFO" ]

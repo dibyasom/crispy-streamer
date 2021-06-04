@@ -20,6 +20,7 @@ services:
       GOOGLE_APPLICATION_CREDENTIALS: "/build/secret/creds.json"
     volumes:
       - shared-source-code:/build/workspace:rw
+      - ./gcs-celery-worker-src/secret/:/build/assets/
     links:
       - broker
       - backend
@@ -27,8 +28,6 @@ services:
   stream-handle:
     build: ./stream-handle-src/
     container_name: stream-handle
-    environment: 
-      GOOGLE_APPLICATION_CREDENTIALS: "/build/secret/creds.json"
     volumes:
       - shared-source-code:/build/workspace:rw
       - ./stream-handle-src/src:/build/assets/
