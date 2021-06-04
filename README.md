@@ -1,4 +1,4 @@
-# :zap: crsipy-streamer :rocket:
+# :zap: crispy-streamer :tv:
 
 ### < Brief / >
 
