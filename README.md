@@ -100,7 +100,7 @@ Workload of the on-premise device can be primarily categorized into >
 
 ### Best Workaround w/o GPU
 
-- `Client-Analytics` for multiple IP-streams on the on-premise device, considering the endless chip shortage right now, the best workaround would be TPU (Tensor Processig Unit). It's expensive, but it's mobile versions exist, and provide `better performance/cost ratio` compared to GPU, I researched about it, currently it's not in practice by any video-monitoring cctv service, deploying this in practice can be a novelty too.
+- `Client-Analytics` for multiple IP-streams on the on-premise device, considering the endless chip shortage right now, the best workaround would be TPU (Tensor Processig Unit). Its expensive, but it's mobile versions exist, and provide `better performance/cost ratio` compared to GPU, I researched about it, currently it's not in practice by any video-monitoring cctv service, deploying this in practice can be a novelty too.
 
   - _Google's developed coral-stick (at just 60$) is a custom designed FPGA capable of 4 Trillion-Operations-Per-Second (TOPS)._
   - Benchmarks shows, it can run MobileNet at more than 400FPS with object detection.
