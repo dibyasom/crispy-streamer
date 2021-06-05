@@ -118,6 +118,18 @@ Workload of the on-premise device can be primarily categorized into >
   - Out of the box, it supports tensorflow-lite based models, for direct porting.
   - Models running on different frameworks, might require extra work to be executable on coral stick.
 
+#### My suggested architecture for 10-IP camera setup.
+
+##### I haven't worked on these workstations first hand, but I went through various article, user experiences, and module's documentation, on paper this configuration seems optimal for 10 IP-stream setup.
+
+| Component | Spec                                                                                                              |
+| --------- | ----------------------------------------------------------------------------------------------------------------- |
+| CPU       | AMD Ryzen 7 3700X (8-cores, substantial boost for ingestion and uploading.)                                       |
+| RAM       | >= 16 GB (Virtualisation with Docker, and multiple worker nodes executing in parallel will benefit from more RAM) |
+| GPU       | NVIDIA T1000 (Power efficient and 896 CUDA cores, can run multiple neural nets, for powering client analytics)    |
+
+<hr>
+
 #### Case-Study of Camio box configurations
 
 | IP streams supported <= 2 | Config               |
