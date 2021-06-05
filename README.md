@@ -6,8 +6,6 @@
 
 #### Source code (and explanations) for implementing the objective of uploading frames into `GCS bucket`, compute its resolution, and log the details. <br><br>I have used `docker` with custom `Dockerfile` for provisioning a fine tuned runtime for running the concurrent frame upload worker nodes, worker nodes are managed by `celery`. <br><br> Tested with sample CCTV footages (From Youtube), consistently achieved `60+ FPS` :rocket: with still a huge room for optimisation here, for instance `scene-based` resolution resizing and video compression on top of that, could significantly improve the performance beyond 100+ FPS.<br><br>
 
-### TODO: Research + Supporting hardware config ?
-
 ### Working of frame uploader
 
 <hr>
@@ -76,6 +74,87 @@ REFRESH_RATE = 3
 ![Log zommed in <3](images/log-zoomed-in.png)
 
 <hr>
+
+### Hardware configuration </>
+
+Workload of the on-premise device can be primarily categorized into >
+
+| Task             | Desc                                                                                       | Type                     |
+| ---------------- | ------------------------------------------------------------------------------------------ | ------------------------ |
+| Ingestion        | Ingesting/Reading from various IP streams                                                  | IO-Bound                 |
+| Client-Analytics | Analysing streams in real-time to determine encoding quality, or generate real-time alerts | Computaionally Intensive |
+| Uploading        | Upload video streams into cloud (for archiving and advanced inferences with AI in cloud)   | IO-Bound                 |
+
+- `Ingestion` and `uploading` being IO-Bound tasks, can work without having to depend on GPU runtime, and substantially improved performance via multi-threading, monitored by celery.
+- `Client-analytics` (CPU env), It is possible to run a mobile-optimised machine learning framework like tensorflow-lite or mediapipe on a CPU, but it will get bottlenecked in executing multiple IP streams, reason being
+
+  - Each client-analytic (ML model) instance is a neural-network and _will rely on intensive computations for each cylce_.
+  - Hence it's _not an IO-bound task_, i.e putting it into _concurrent execution with celery (in a CPU env) will probably degrade the overall performance_, although implementing multi-processing here might make a minimal difference.
+  - I think, it's safe to say `client-analytics on CPU should not be extended beyond 4 IP streams`, for real-time analysis.
+
+- `Client-Analytics` (GPU env), is the best way to power a Machine Learning Model, reason being it's hardware architecture,
+  - A CPU generally has 2/4/8/12/16 or upto 128 (4000$ /-) cores, where as a beginner-level GPU has 4500+ cores, not clocked at a frequency as high as CPU cores, but the physical count of cores is 500x that of a general CPU. Due to this hardware limitation, GPU completely crushes down a CPU in model execution.
+  - At its core, a neural network is a series of Matrix Multiplication of weights accross the layers in every cycle, and here's a graph showing the advantage of parallel computation provided by GPU
+    ![Matrix Multiplications CPU-vs-GPU](images/mult.png)
+  - On top of that lots of framework provide even better optimisation to make best use of these multitude of cores, the ones I'm aware of are Nvidia-CUDA, Nvidia-RT and Tensorflow-GPU.
+
+### Best Workaround w/o GPU
+
+- `Client-Analytics` for multiple IP-streams on the on-premise device, considering the endless chip shortage right now, the best workaround would be TPU (Tensor Processig Unit). It's expensive, but it's mobile versions exist, and provide `better performance/cost ratio` compared to GPU, I researched about it, currently it's not in practice by any video-monitoring cctv service, deploying this in practice can be a novelty too.
+
+  - _Google's developed coral-stick (at just 60$) is a custom designed FPGA capable of 4 Trillion-Operations-Per-Second (TOPS)._
+  - Benchmarks shows, it can run MobileNet at more than 400FPS with object detection.
+  - Complete documentation of google coral, [here.](https://coral.ai/products/accelerator/)
+
+- Advantages
+
+  - Plug-and-play USB stick.
+  - Frees the CPU from ML workload, and won't let the concurrent threads uploading video to cloud be bottlenecked due to extensive workload.
+  - 4-TOPS computational speed, without any dependency on the machine, works with any PC configuration.
+  - Multiple corals plugged into system, provide very effective horizontal scaling.
+
+- Limitation
+
+  - Out of the box, it supports tensorflow-lite based models, for direct porting.
+  - Models running on different frameworks, might require extra work to be executable on coral stick.
+
+#### Case-Study of Camio box configurations
+
+| IP streams supported <= 2 | Config               |
+| ------------------------- | -------------------- |
+| CPU                       | ARM based mobile CPU |
+| RAM                       | 2 GB                 |
+| GPU                       | None                 |
+
+| IP streams supported <= 14 | Config                                                                                                                       |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| CPU                        | i5, 6-cores                                                                                                                  |
+| RAM                        | 16 GB                                                                                                                        |
+| GPU                        | NVIDIA Quadro P1000 / 640 CUDA enabled cores/ DataCenter variant GPU tweaked at lower clockrates compared to gaming variants |
+
+| IP streams supported <= 42 | Config                                                      |
+| -------------------------- | ----------------------------------------------------------- |
+| CPU                        | Intel Xeon Silver 4214 2.2G, 12-Cores                       |
+| RAM                        | 32 GB                                                       |
+| GPU                        | NVIDIA Quadro RTX 4000 / 2304 CUDA cores + 288 Tensor Cores |
+
+| IP streams supported <= 140 | Config                                                                        |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| CPU                         | 2x Intel Xeon Gold 5220R 2.2G, 24 physical cores                              |
+| RAM                         | 96 GB                                                                         |
+| GPU                         | 2x NVIDIA Tesla T4 / 5120 CUDA cores + 640 Tensor core (Combinging both GPUs) |
+
+1. #### Looking at camio's box architecture, seems most of the Machine Learning inferences are being done on-premise, as the box is equipped with Quadro RTX GPU , it must be capable of running multiple instances of Neural Nets without any bottlenecking.
+
+2. #### Cloud architecture of camio depends on the box for providing inferences, compressed video chunks, and dataflow checks through the inferences and to manage usage-based billing and filtering the data in general.
+
+3. #### The cloud architecture, also provides ML for NLP, to understand the queries, and search them down from datastore, which is indexed on basis of events, timestamps, camera-source to enable near real-time querying.
+
+4. #### Another important functionality of Cloud platform is to enable customised ML, for searching and keeping track of particular events on user's demand, for instance a black-dog/red car/any object in the camera with ID XXXXX, probably their app engine runs thorough the inferences given by Box, to filter out these events.
+
+5. #### Another key advantage of running ML on-premise for camio, they ML is learning from the user's behaviour, whereas in cloud, the deploying the same functionality on cloud AI might be challenging as separate DBs need to be mantained to keep track of user preferences.
+
+  <hr><br>
 
 ### Limitations
 
