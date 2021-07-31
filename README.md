@@ -118,45 +118,7 @@ Workload of the on-premise device can be primarily categorized into >
   - Out of the box, it supports tensorflow-lite based models, for direct porting.
   - Models running on different frameworks, might require extra work to be executable on coral stick.
 
-#### My suggested architecture for 10-IP camera setup.
-
-##### I haven't worked on these workstations first hand, but I went through various article, user experiences, and module's documentation, on paper this configuration seems optimal for 10 IP-stream setup.
-
-| Component | Spec                                                                                                              |
-| --------- | ----------------------------------------------------------------------------------------------------------------- |
-| CPU       | AMD Ryzen 7 3700X (8-cores, substantial boost for ingestion and uploading.)                                       |
-| RAM       | >= 16 GB (Virtualisation with Docker, and multiple worker nodes executing in parallel will benefit from more RAM) |
-| GPU       | NVIDIA T1000 (Power efficient and 896 CUDA cores, can run multiple neural nets, for powering client analytics)    |
-
 <hr>
-
-#### Case-Study of Camio box configurations
-
-| IP streams supported <= 2 | Config               |
-| ------------------------- | -------------------- |
-| CPU                       | ARM based mobile CPU |
-| RAM                       | 2 GB                 |
-| GPU                       | None                 |
-
-| IP streams supported <= 14 | Config                                                                                                                       |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| CPU                        | i5, 6-cores                                                                                                                  |
-| RAM                        | 16 GB                                                                                                                        |
-| GPU                        | NVIDIA Quadro P1000 / 640 CUDA enabled cores/ DataCenter variant GPU tweaked at lower clockrates compared to gaming variants |
-
-| IP streams supported <= 42 | Config                                                      |
-| -------------------------- | ----------------------------------------------------------- |
-| CPU                        | Intel Xeon Silver 4214 2.2G, 12-Cores                       |
-| RAM                        | 32 GB                                                       |
-| GPU                        | NVIDIA Quadro RTX 4000 / 2304 CUDA cores + 288 Tensor Cores |
-
-| IP streams supported <= 140 | Config                                                                        |
-| --------------------------- | ----------------------------------------------------------------------------- |
-| CPU                         | 2x Intel Xeon Gold 5220R 2.2G, 24 physical cores                              |
-| RAM                         | 96 GB                                                                         |
-| GPU                         | 2x NVIDIA Tesla T4 / 5120 CUDA cores + 640 Tensor core (Combinging both GPUs) |
-
-1. #### Looking at camio's box architecture, seems most of the Machine Learning inferences are being done on-premise, as the box is equipped with Quadro RTX GPU , it must be capable of running multiple instances of Neural Nets without any bottlenecking.
 
 2. #### Cloud architecture of camio depends on the box for providing inferences, compressed video chunks, and dataflow checks through the inferences and to manage usage-based billing and filtering the data in general.
 
